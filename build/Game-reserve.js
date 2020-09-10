@@ -1,5 +1,6 @@
 import { PlayerLocal } from './PlayerLocal.js'
 import { Player } from './Player.js'
+import {JoyStick} from "./libs/toon3d.js";
 
 export class Game {
   constructor() {
