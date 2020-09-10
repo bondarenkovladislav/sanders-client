@@ -8,7 +8,7 @@
   "scripts": {
     "build": "parcel build index.html",
     "dev": "parcel index.html --open",
-    "start": "http-server . -p 8000",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
@@ -16,6 +16,7 @@
     "prettier": "^2.1.1"
   },
   "dependencies": {
+    "express": "^4.17.1",
     "socket.io-client": "^2.3.0",
     "three": "^0.120.1",
     "three-fbx-loader": "^1.0.3",

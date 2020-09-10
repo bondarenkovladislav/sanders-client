@@ -46,7 +46,7 @@ export class Game {
     this.scene
     this.renderer
     this.animations = {}
-    this.assetsPath = '../assets/'
+    this.assetsPath = './assets/'
     // this.controls
 
     this.remotePlayers = []
