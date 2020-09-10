@@ -1,4 +1,4 @@
-import {Game} from "./Game.js";
+import {Game} from "./Game-reserve.js";
 
 document.addEventListener('DOMContentLoaded', () => {
   const game = new Game()

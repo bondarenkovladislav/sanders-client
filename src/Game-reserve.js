@@ -27,7 +27,7 @@ export class Game {
     // };
     //
     // animate();
-
+    //
     this.modes = Object.freeze({
       NONE: Symbol('none'),
       PRELOAD: Symbol('preload'),
@@ -69,7 +69,11 @@ export class Game {
 
     this.clock = new THREE.Clock()
 
+    this.totalTime = 0
+
     this.init()
+    // this.animate()
+    // this.animate2()
     // this.preloader = new Preloader(options)
 
     window.onError = (error) => {
@@ -77,21 +81,51 @@ export class Game {
     }
   }
 
+  animate2() {
+    requestAnimationFrame(() => this.animate2())
+    const deltaTime = this.clock.getDelta()
+    this.totalTime += deltaTime
+    this.update()
+    this.render()
+  }
+
+  update() {
+    // update artoolkit on every frame
+    if (this.arToolkitSource.ready !== false)
+      this.arToolkitContext.update(this.arToolkitSource.domElement)
+  }
+
+  render() {
+    this.renderer.render(this.scene, this.camera)
+  }
+
   init() {
     // this.mode = this.modes.INITIALISING
-    this.camera = new THREE.PerspectiveCamera(
-      60,
-      window.innerWidth / window.innerHeight,
-      10,
-      200000
-    )
+    // this.camera = new THREE.PerspectiveCamera(
+    //   60,
+    //   window.innerWidth / window.innerHeight,
+    //   10,
+    //   200000
+    // )
+
+
 
     this.scene = new THREE.Scene()
-    this.scene.background = new THREE.Color(0xa0a0a0)
+    // this.scene.background = new THREE.Color(0xa0a0a0)
     // this.scene.fog = new THREE.Fog(0xa0a0a0, 700, 1800)
 
+    this.dummy = new THREE.Object3D()
+    this.dummy.scale.set(0.001, 0.001, 0.001)
+    this.scene.add(this.dummy)
+
+
+    this.camera = new THREE.Camera();
+    // this.camera.position.set(0, 0, 700 );
+    // this.camera.position.set(0, 0, 100 );
+    this.scene.add(this.camera);
+
     const ambient = new THREE.AmbientLight(0xaaaaaa)
-    this.scene.add(ambient)
+    this.dummy.add(ambient)
 
     let light = new THREE.DirectionalLight(0xaaaaaa)
     light.position.set(30, 100, 40)
@@ -108,88 +142,18 @@ export class Game {
     light.shadow.mapSize.height = 1024
 
     this.sun = light
-
-    //
-    // light = new THREE.DirectionalLight(0xffffff)
-    // light.position.set(0, 200, 100)
-    // light.castShadow = true
-    // light.shadow.camera.top = 180
-    // light.shadow.camera.bottom = -100
-    // light.shadow.camera.left = -120
-    // light.shadow.camera.right = 120
-    this.scene.add(light)
-    //
-    const mesh = new THREE.Mesh(
-      new THREE.PlaneBufferGeometry(10000, 10000),
-      // new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false, side: THREE.DoubleSide })
-      new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false })
-    )
-    mesh.rotation.x = Math.PI / 2
-    mesh.receiveShadow = true
-    this.scene.add(mesh)
-    //
-    const grid = new THREE.GridHelper(10000, 40, 0x00000, 0x00000)
-    grid.material.opacity = 0.2
-    grid.material.transparent = true
-    this.scene.add(grid)
+    this.dummy.add(light)
 
     const loader = new THREE.FBXLoader()
 
-    this.player = new PlayerLocal(this)
-    this.generateMarker(loader)
+    // this.player = new PlayerLocal(this)
+    // this.generateMarker(loader)
     // this.scene.add(this.player.object)
 
-    this.joystick = new JoyStick({
-      onMove: this.playerControl,
-      game: this,
-    })
-
-    // loader.load(`${this.assetsPath}fbx/people/BSanders.FBX`, function (object) {
-    //   object.mixer = new THREE.AnimationMixer(object)
-    //   game.player.mixer = object.mixer
-    //   game.player.root = object.mixer.getRoot()
-    //
-    //   object.name = 'BSanders'
-    //
-    //   object.traverse(function (child) {
-    //     if (child.isMesh) {
-    //       child.castShadow = true
-    //       child.receiveShadow = false
-    //     }
-    //   })
-    //
-    //   const tLoader = new THREE.TextureLoader()
-    //   tLoader.load(`${game.assetsPath}fbx/people/lp_100.png`, function (
-    //     texture
-    //   ) {
-    //     object.traverse((child) => {
-    //       if (child.isMesh) {
-    //         child.material.map = texture
-    //       }
-    //     })
-    //   })
-
-    // let texture = new THREE.TextureLoader().load( 'https://mma.prnewswire.com/media/1022760/Geenee___Logo.jpg?p=facebook' );
-    // let texture = new THREE.TextureLoader().load( 'https://www.finsmes.com/wp-content/uploads/2019/11/geenee.png' );
-    // let texture = new THREE.TextureLoader().load( '../assets/geenee.png' );
-    // let logoMaterial= new THREE.MeshBasicMaterial( { map: texture ,opacity: 0.8, transparent: true } )
-    // let logoPlane= new THREE.PlaneGeometry(1200,600,1,1)
-    // let logo = new THREE.Mesh(logoPlane, logoMaterial)
-    //
-    // // flowe
-    //
-    // game.scene.add(logo)
-    // logo.position.set(0, 100, 600)
-    // logo.rotateY(3.14)
-
-    //
-    // game.scene.add(object)
-
-    // object.rotateY(3.14)
-
-    // game.player.object = object
-    // game.player.mixer.clipAction(object.animations[0]).play()
-    // game.animations.Idle = object.animations[0]
+    // this.joystick = new JoyStick({
+    //   onMove: this.playerControl,
+    //   game: this,
+    // })
 
     this.loadNextAnim(loader)
     // this.loadEnvironment(loader)
@@ -201,53 +165,118 @@ export class Game {
       },
       false
     )
-    // game.animate()
-    // })
 
-    // var scene = new THREE.Scene();
-    // var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-    //
-    // var renderer = new THREE.WebGLRenderer();
-    // renderer.setSize( window.innerWidth, window.innerHeight );
-    // document.body.appendChild( renderer.domElement );
-
-    // var geometry = new THREE.BoxGeometry();
-    // var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    // var cube = new THREE.Mesh( geometry, material );
-    // this.scene.add( cube );
-    //
-    // this.camera.position.z = 5;
-
-
-    this.renderer = new THREE.WebGLRenderer({ antialias: true })
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+    this.renderer.setClearColor(new THREE.Color('lightgrey'), 0)
     this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(window.innerWidth, window.innerHeight)
     this.renderer.shadowMap.enabled = true
     this.container.appendChild(this.renderer.domElement)
-    // this.renderer.render( this.scene, this.camera );
 
-    // if ('ontouchstart' in window) {
-    //   window.addEventListener('touchdown', (e) => this.onMouseDown(e), false)
-    // } else {
-    //   window.addEventListener('mousedown', (e) => this.onMouseDown(e), false)
-    // }
-
-    this.controls = new THREE.OrbitControls(
-      this.camera,
-      this.renderer.domElement
-    )
-    this.controls.target.set(0, 150, 0)
-    // this.controls.enableDamping = true;
-    // this.controls.dampingFactor = 0.25;
-    // this.controls.enableZoom = true;
-    // this.controls.autoRotate = true;
-    const loader1 = new THREE.TextureLoader()
-    const texture = loader1.load('../assets/big.jpg', () => {
-      const rt = new THREE.WebGLCubeRenderTarget(texture.image.height)
-      rt.fromEquirectangularTexture(this.renderer, texture)
-      this.scene.background = rt
+    this.arToolkitSource = new THREEx.ArToolkitSource({
+      sourceType: 'webcam',
     })
-    this.controls.update()
+
+    const onResize = () => {
+      this.arToolkitSource.onResize()
+      this.arToolkitSource.copySizeTo(this.renderer.domElement)
+      if (this.arToolkitContext.arController !== null) {
+        this.arToolkitSource.copySizeTo(this.arToolkitContext.arController.canvas)
+      }
+    }
+
+    this.arToolkitSource.init(() => {
+      onResize()
+    })
+
+    window.addEventListener('resize', function () {
+      onResize()
+    })
+
+    // create atToolkitContext
+    this.arToolkitContext = new THREEx.ArToolkitContext({
+      cameraParametersUrl: 'data/camera_para.dat',
+      detectionMode: 'mono',
+    })
+
+    // copy projection matrix to camera when initialization complete
+    this.arToolkitContext.init(() => {
+      this.camera.projectionMatrix.copy(
+        this.arToolkitContext.getProjectionMatrix()
+      )
+    })
+
+    ////////////////////////////////////////////////////////////
+    // setup markerRoots
+    ////////////////////////////////////////////////////////////
+
+    // build markerControls
+    this.markerRoot = new THREE.Group()
+    this.dummy.add(this.markerRoot)
+    let markerControls1 = new THREEx.ArMarkerControls(
+      this.arToolkitContext,
+      this.markerRoot,
+      {
+        size: 150,
+        type: 'pattern',
+        patternUrl: 'data/hiro.patt',
+      }
+    )
+
+    let geometry1 = new THREE.CubeGeometry(1, 1, 1)
+    let material1 = new THREE.MeshNormalMaterial({
+      transparent: true,
+      opacity: 0.5,
+      side: THREE.DoubleSide,
+    })
+
+    const mesh1 = new THREE.Mesh(geometry1, material1)
+    mesh1.position.y = 0.5
+
+    this.markerRoot.add(mesh1)
+
+
+
+    const mesh = new THREE.Mesh(
+      new THREE.PlaneBufferGeometry(10000, 10000),
+      // new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false, side: THREE.DoubleSide })
+      new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false, })
+    )
+    mesh.rotation.x = Math.PI / 2
+    mesh.receiveShadow = true
+    this.markerRoot.add(mesh)
+    //
+    const grid = new THREE.GridHelper(10000, 40, 0x00000, 0x00000)
+    // grid.material.opacity = 0.2
+    // grid.material.transparent = true
+    this.markerRoot.add(grid)
+
+    // this.controls = new THREE.OrbitControls(
+    //   this.camera,
+    //   this.renderer.domElement
+    // )
+    // this.controls.target.set(0, 150, 0)
+    // const loader1 = new THREE.TextureLoader()
+    // const texture = loader1.load('../assets/big.jpg', () => {
+    //   const rt = new THREE.WebGLCubeRenderTarget(texture.image.height)
+    //   rt.fromEquirectangularTexture(this.renderer, texture)
+    //   this.scene.background = rt
+    // })
+    // this.controls.update()
+
+
+    // const loader = new THREE.FBXLoader()
+
+    this.player = new PlayerLocal(this)
+    // // this.generateMarker(loader)
+    // this.markerRoot.add(this.player.object)
+
+    this.joystick = new JoyStick({
+      onMove: this.playerControl,
+      game: this,
+    })
+
+    // this.loadNextAnim(loader)
   }
 
   animate() {
@@ -256,6 +285,7 @@ export class Game {
       this.animate()
     })
 
+    this.totalTime += dt
     this.updateRemotePlayers(dt)
 
     if (this.player.mixer != undefined && this.mode == this.modes.ACTIVE) {
@@ -273,20 +303,20 @@ export class Game {
       this.player.move(dt)
     }
 
-    if (
-      this.player.cameras != undefined &&
-      this.player.cameras.active != undefined &&
-      this.player !== undefined &&
-      this.player.object !== undefined
-    ) {
-      this.camera.position.lerp(
-        this.player.cameras.active.getWorldPosition(new THREE.Vector3()),
-        0.05
-      )
-      const pos = this.player.object.position.clone()
-      pos.y += 200
-      this.camera.lookAt(pos)
-    }
+    // if (
+    //   this.player.cameras != undefined &&
+    //   this.player.cameras.active != undefined &&
+    //   this.player !== undefined &&
+    //   this.player.object !== undefined
+    // ) {
+    //   this.camera.position.lerp(
+    //     this.player.cameras.active.getWorldPosition(new THREE.Vector3()),
+    //     0.05
+    //   )
+    //   const pos = this.player.object.position.clone()
+    //   pos.y += 200
+    //   this.camera.lookAt(pos)
+    // }
 
     if (this.sun != undefined && this.player && this.player.object) {
       this.sun.position.x = this.player.object.position.x
@@ -295,18 +325,20 @@ export class Game {
       this.sun.target = this.player.object
     }
 
+    this.update()
+
     this.renderer.render(this.scene, this.camera)
   }
 
-  loadEnvironment (loader) {
-    loader.load(`${this.assetsPath}fbx/Street.fbx`, object => {
+  loadEnvironment(loader) {
+    loader.load(`${this.assetsPath}fbx/Street.fbx`, (object) => {
       this.environment = object
       this.colliders = []
       this.scene.add(object)
-      object.scale.set(10,10,10)
-      object.traverse(child => {
-        if(child.isMesh) {
-          if(child.name.startsWith('proxy')) {
+      object.scale.set(10, 10, 10)
+      object.traverse((child) => {
+        if (child.isMesh) {
+          if (child.name.startsWith('proxy')) {
             this.colliders.push(child)
             child.material.visible = false
           } else {
@@ -321,7 +353,6 @@ export class Game {
       // const tloader = new Three.CubeTextureLoader()
       // tloader.setPath(``)
       // cos
-
     })
   }
 
@@ -378,7 +409,7 @@ export class Game {
     this.player.cameras.active = object
   }
 
-  get activeCamera () {
+  get activeCamera() {
     return this.player.cameras.active
   }
 
@@ -411,11 +442,11 @@ export class Game {
     this.renderer.setSize(window.innerWidth, window.innerHeight)
   }
 
-  generateMarker () {
+  generateMarker() {
     const geometry = new THREE.SphereGeometry(100, 32, 32)
     const material = new THREE.MeshStandardMaterial({
       color: 0x24ed27,
-      metalness: 0.7
+      metalness: 0.7,
     })
 
     const mesh = new THREE.Mesh(geometry, material)
@@ -424,10 +455,12 @@ export class Game {
   }
 
   createColliders() {
+    return
     const geometry = new THREE.BoxGeometry(500, 400, 500)
     const material = new THREE.MeshBasicMaterial({
-      color: 0x5d5e5e,
-      wireframe: true,
+      // color: 0x5d5e5e,
+      color: 0xffffff,
+      // wireframe: true,
     })
     // const material = new THREE.MeshBasicMaterial({color:	0x000000, wireframe:true});
 
@@ -438,7 +471,7 @@ export class Game {
         if (x == 0 && z == 0) continue
         const box = new THREE.Mesh(geometry, material)
         box.position.set(x, 200, z)
-        this.scene.add(box)
+        this.markerRoot.add(box)
         this.colliders.push(box)
       }
     }
@@ -447,7 +480,7 @@ export class Game {
     const stage = new THREE.Mesh(geometry2, material)
     stage.position.set(0, 20, 0)
     this.colliders.push(stage)
-    this.scene.add(stage)
+    this.markerRoot.add(stage)
   }
 
   updateRemotePlayers(dt) {
@@ -489,7 +522,6 @@ export class Game {
         }
       }
     })
-
 
     this.scene.children.forEach((object) => {
       if (
