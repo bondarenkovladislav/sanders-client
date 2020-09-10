@@ -59,9 +59,9 @@ export class Game {
       index: 0,
     }
 
-    this.container = document.createElement('div')
-    this.container.style.height = '100%'
-    document.body.appendChild(this.container)
+    // this.container = document.createElement('div')
+    // this.container.style.height = '100%'
+    // document.body.appendChild(this.container)
 
     this.anims = ['Happy Walk', 'Running', 'Walking Backwards', 'Drunk Turn']
 
@@ -158,23 +158,29 @@ export class Game {
     this.loadNextAnim(loader)
     // this.loadEnvironment(loader)
 
-    window.addEventListener(
-      'resize',
-      () => {
-        this.onWindowResize()
-      },
-      false
-    )
+    // window.addEventListener(
+    //   'resize',
+    //   () => {
+    //     this.onWindowResize()
+    //   },
+    //   false
+    // )
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     this.renderer.setClearColor(new THREE.Color('lightgrey'), 0)
     this.renderer.setPixelRatio(window.devicePixelRatio)
-    this.renderer.setSize(window.innerWidth, window.innerHeight)
+    // this.renderer.setSize(window.innerWidth, window.innerHeight)
+    // console.log(window.innerHeight, window.innerWidth)
+    this.renderer.setSize( 640, 480 );
     this.renderer.domElement.style.position = 'absolute'
     this.renderer.domElement.style.top = '0px'
     this.renderer.domElement.style.left = '0px'
+    // this.renderer.domElement.style.width = window.innerWidth
+    // this.renderer.domElement.style.height = window.innerHeight
+    document.body.appendChild( this.renderer.domElement );
+
     this.renderer.shadowMap.enabled = true
-    this.container.appendChild(this.renderer.domElement)
+    // this.container.appendChild(this.renderer.domElement)
 
     this.arToolkitSource = new THREEx.ArToolkitSource({
       sourceType: 'webcam',
