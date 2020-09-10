@@ -6,7 +6,7 @@
   "license": "",
   "author": "",
   "scripts": {
-    "build": "parcel build index.html",
+    "build": "node index.js",
     "dev": "parcel index.html --open",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
