@@ -1,0 +1,24 @@
+{
+  "name": " ",
+  "version": "0.0.1",
+  "description": "",
+  "keywords": "",
+  "license": "",
+  "author": "",
+  "scripts": {
+    "build": "parcel build index.html",
+    "dev": "parcel index.html --open",
+    "start": "http-server . -p 8000",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4",
+    "prettier": "^2.1.1"
+  },
+  "dependencies": {
+    "socket.io-client": "^2.3.0",
+    "three": "^0.120.1",
+    "three-fbx-loader": "^1.0.3",
+    "three-orbit-controls": "^82.1.0"
+  }
+}
