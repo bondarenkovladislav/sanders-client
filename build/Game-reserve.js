@@ -170,6 +170,9 @@ export class Game {
     this.renderer.setClearColor(new THREE.Color('lightgrey'), 0)
     this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(window.innerWidth, window.innerHeight)
+    this.renderer.domElement.style.position = 'absolute'
+    this.renderer.domElement.style.top = '0px'
+    this.renderer.domElement.style.left = '0px'
     this.renderer.shadowMap.enabled = true
     this.container.appendChild(this.renderer.domElement)
 
@@ -436,10 +439,10 @@ export class Game {
   }
 
   onWindowResize() {
-    this.camera.aspect = window.innerWidth / window.innerHeight
-    this.camera.updateProjectionMatrix()
+    // this.camera.aspect = window.innerWidth / window.innerHeight
+    // this.camera.updateProjectionMatrix()
 
-    this.renderer.setSize(window.innerWidth, window.innerHeight)
+    // this.renderer.setSize(window.innerWidth, window.innerHeight)
   }
 
   generateMarker() {
