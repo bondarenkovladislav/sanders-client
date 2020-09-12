@@ -59,7 +59,7 @@ export class Player {
 
       this.object.add(object)
       if (this.deleted === undefined) {
-        game.markerRoot.add(this.object)
+        game.scene.add(this.object)
       }
 
       if (this.local) {

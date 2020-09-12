@@ -1,5 +1,6 @@
 import { PlayerLocal } from './PlayerLocal.js'
 import { Player } from './Player.js'
+import {JoyStick} from "./libs/toon3d.js";
 
 export class Game {
   constructor() {
@@ -46,7 +47,7 @@ export class Game {
     this.scene
     this.renderer
     this.animations = {}
-    this.assetsPath = '../assets/'
+    this.assetsPath = './assets/'
     // this.controls
 
     this.remotePlayers = []
@@ -242,7 +243,7 @@ export class Game {
     // this.controls.enableZoom = true;
     // this.controls.autoRotate = true;
     const loader1 = new THREE.TextureLoader()
-    const texture = loader1.load('../assets/big.jpg', () => {
+    const texture = loader1.load('./assets/big.jpg', () => {
       const rt = new THREE.WebGLCubeRenderTarget(texture.image.height)
       rt.fromEquirectangularTexture(this.renderer, texture)
       this.scene.background = rt

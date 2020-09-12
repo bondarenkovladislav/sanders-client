@@ -24,7 +24,7 @@ export class PlayerLocal extends Player {
         let index = game.remotePlayers.indexOf(players[0])
         if (index != -1) {
           game.remotePlayers.splice(index, 1)
-          game.markerRoot.remove(players[0].object)
+          game.scene.remove(players[0].object)
         } else {
           index = game.initialisingPlayers.indexOf(data.id)
           if (index != -1) {
@@ -161,7 +161,6 @@ export class PlayerLocal extends Player {
       const gravity = 30
 
       let intersect = raycaster.intersectObjects(colliders)
-      console.log(intersect)
       if (intersect.length > 0) {
         const targetY = pos.y - intersect[0].distance
         if (targetY > this.object.position.y) {
