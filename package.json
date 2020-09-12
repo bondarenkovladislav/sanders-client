@@ -2,13 +2,17 @@
   "name": "sanders-game",
   "version": "0.0.1",
   "description": "",
-  "keywords": ["key"],
+  "keywords": [
+    "key"
+  ],
   "license": "",
   "author": "",
   "scripts": {
     "build": "node buildscript.js",
     "dev": "parcel index.html --open",
     "start": "node index.js",
+    "client": "node index.js",
+    "server": "node server/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
@@ -16,7 +20,9 @@
     "prettier": "^2.1.1"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1",
+    "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0"
   }
 }

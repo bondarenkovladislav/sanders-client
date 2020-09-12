@@ -4,7 +4,7 @@ export class PlayerLocal extends Player {
   constructor(game, model) {
     super(game, model)
 
-    const socket = io.connect('https://pacific-scrubland-63536.herokuapp.com/')
+    const socket = io.connect('https://secret-headland-29054.herokuapp.com/')
     this.socket = socket
 
     socket.on('setId', (data) => {
