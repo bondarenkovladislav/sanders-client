@@ -448,7 +448,7 @@ export class Game {
             }
           })
           if (rplayer === undefined) {
-            game.initialisingPlayers.push(new Player(game, data))
+            this.initialisingPlayers.push(new Player(game, data))
           } else {
             remotePlayers.push(rplayer)
             remoteColliders.push(rplayer.collider)
