@@ -25,7 +25,6 @@ export class Player {
     this.animations = game.animations
 
     const loader = new THREE.FBXLoader()
-
     loader.load(`${game.assetsPath}fbx/people/${model}.fbx`, (object) => {
       // loader.load(`${game.assetsPath}fbx/people/Iron_Man_Mark.fbx`, (object) => {
       object.mixer = new THREE.AnimationMixer(object)
@@ -65,7 +64,7 @@ export class Player {
       if (this.local) {
         game.createCameras()
         game.createColliders()
-        game.sun.target = game.player.object
+        // game.sun.target = game.player.object
         game.animations.Idle = object.animations[0]
         if (this.initSocket !== undefined) {
           this.initSocket()

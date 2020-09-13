@@ -63,7 +63,7 @@ export class Game {
 
     this.scene = new THREE.Scene()
     this.scene.background = new THREE.Color(0xa0a0a0)
-    // this.scene.fog = new THREE.Fog(0xa0a0a0, 700, 1800)
+    this.scene.fog = new THREE.Fog(0x709bdc, 100, 5800)
 
     const ambient = new THREE.AmbientLight(0xaaaaaa)
     this.scene.add(ambient)
@@ -183,11 +183,23 @@ export class Game {
     this.renderer.shadowMap.enabled = true
     this.container.appendChild(this.renderer.domElement)
 
-    // if ('ontouchstart' in window) {
-    //   window.addEventListener('touchdown', (e) => this.onMouseDown(e), false)
-    // } else {
-    //   window.addEventListener('mousedown', (e) => this.onMouseDown(e), false)
-    // }
+    this.renderer.autoClear = false;
+    this.composer = new THREE.EffectComposer(this.renderer);
+    var sunRenderModel = new THREE.RenderPass(this.scene, this.camera);
+
+    var bloomPass = new THREE.BloomBlendPass(
+      2.0, // the amount of blur
+      1.0, // interpolation(0.0 ~ 1.0) original image and bloomed image
+      new THREE.Vector2(1024, 1024) // image resolution
+    );
+    bloomPass.renderToScreen = true;
+
+    var effectCopy = new THREE.ShaderPass(THREE.CopyShader);
+    effectCopy.renderToScreen = true;
+    this.composer.addPass(sunRenderModel);
+    this.composer.addPass( bloomPass );
+    this.composer.addPass(effectCopy);
+
 
     this.controls = new THREE.OrbitControls(
       this.camera,
@@ -252,7 +264,8 @@ export class Game {
       this.sun.target = this.player.object
     }
 
-    this.renderer.render(this.scene, this.camera)
+    // this.renderer.render(this.scene, this.camera)
+    this.composer.render(this.scene, this.camera);
   }
 
   loadEnvironment (loader) {
