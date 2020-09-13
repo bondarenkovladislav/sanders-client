@@ -4,31 +4,6 @@ import {JoyStick} from "./libs/toon3d.js";
 
 export class Game {
   constructor() {
-    // this.scene = new THREE.Scene();
-    // this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-    //
-    // var renderer = new THREE.WebGLRenderer();
-    // renderer.setSize( window.innerWidth, window.innerHeight );
-    // document.body.appendChild( renderer.domElement );
-    //
-    // var geometry = new THREE.BoxGeometry();
-    // var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    // var cube = new THREE.Mesh( geometry, material );
-    // scene.add( cube );
-    //
-    // camera.position.z = 5;
-    //
-    // var animate = function () {
-    //   requestAnimationFrame( animate );
-    //
-    //   cube.rotation.x += 0.01;
-    //   cube.rotation.y += 0.01;
-    //
-    //   renderer.render( scene, camera );
-    // };
-    //
-    // animate();
-
     this.modes = Object.freeze({
       NONE: Symbol('none'),
       PRELOAD: Symbol('preload'),
@@ -79,7 +54,6 @@ export class Game {
   }
 
   init() {
-    // this.mode = this.modes.INITIALISING
     this.camera = new THREE.PerspectiveCamera(
       60,
       window.innerWidth / window.innerHeight,
@@ -109,30 +83,30 @@ export class Game {
     light.shadow.mapSize.height = 1024
 
     this.sun = light
-
-    //
-    // light = new THREE.DirectionalLight(0xffffff)
-    // light.position.set(0, 200, 100)
-    // light.castShadow = true
-    // light.shadow.camera.top = 180
-    // light.shadow.camera.bottom = -100
-    // light.shadow.camera.left = -120
-    // light.shadow.camera.right = 120
     this.scene.add(light)
-    //
+
+    const grassMaterial  = new THREE.MeshBasicMaterial({side: THREE.DoubleSide});
+    const grassTexture = new THREE.TextureLoader().load( `${this.assetsPath}large_thumbnail.jpg`, (texture) => {
+      grassMaterial.map = texture
+      grassMaterial.needsUpdate = true;
+    });
+
+    grassTexture.wrapS = THREE.RepeatWrapping;
+    grassTexture.wrapT = THREE.RepeatWrapping;
+    grassTexture.repeat.set( 5, 10 );
     const mesh = new THREE.Mesh(
       new THREE.PlaneBufferGeometry(10000, 10000),
       // new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false, side: THREE.DoubleSide })
-      new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false })
+      // new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false })
+      grassMaterial
     )
     mesh.rotation.x = Math.PI / 2
     mesh.receiveShadow = true
     this.scene.add(mesh)
-    //
-    const grid = new THREE.GridHelper(10000, 40, 0x00000, 0x00000)
-    grid.material.opacity = 0.2
-    grid.material.transparent = true
-    this.scene.add(grid)
+    // const grid = new THREE.GridHelper(10000, 40, 0x00000, 0x00000)
+    // grid.material.opacity = 0.2
+    // grid.material.transparent = true
+    // this.scene.add(grid)
 
     const loader = new THREE.FBXLoader()
 
@@ -202,30 +176,12 @@ export class Game {
       },
       false
     )
-    // game.animate()
-    // })
-
-    // var scene = new THREE.Scene();
-    // var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-    //
-    // var renderer = new THREE.WebGLRenderer();
-    // renderer.setSize( window.innerWidth, window.innerHeight );
-    // document.body.appendChild( renderer.domElement );
-
-    // var geometry = new THREE.BoxGeometry();
-    // var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    // var cube = new THREE.Mesh( geometry, material );
-    // this.scene.add( cube );
-    //
-    // this.camera.position.z = 5;
-
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true })
     this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(window.innerWidth, window.innerHeight)
     this.renderer.shadowMap.enabled = true
     this.container.appendChild(this.renderer.domElement)
-    // this.renderer.render( this.scene, this.camera );
 
     // if ('ontouchstart' in window) {
     //   window.addEventListener('touchdown', (e) => this.onMouseDown(e), false)
@@ -316,13 +272,6 @@ export class Game {
           }
         }
       })
-
-      console.log(this.colliders)
-
-      // const tloader = new Three.CubeTextureLoader()
-      // tloader.setPath(``)
-      // cos
-
     })
   }
 
@@ -426,11 +375,15 @@ export class Game {
 
   createColliders() {
     const geometry = new THREE.BoxGeometry(500, 400, 500)
-    const material = new THREE.MeshBasicMaterial({
-      color: 0x5d5e5e,
-      wireframe: true,
-    })
-    // const material = new THREE.MeshBasicMaterial({color:	0x000000, wireframe:true});
+
+    const material  = new THREE.MeshBasicMaterial({side: THREE.DoubleSide, transparent: true, opacity: 0.6});
+    const texture = new THREE.TextureLoader().load( `${this.assetsPath}box.jpg`, (texture) => {
+      material.map = texture
+      material.needsUpdate = true;
+    });
+    // const material = new THREE.MeshBasicMaterial({
+    //   color: 0x5d5e5e,
+    //   wireframe: true,
 
     this.colliders = []
 
@@ -438,7 +391,7 @@ export class Game {
       for (let z = -5000; z < 5000; z += 1000) {
         if (x == 0 && z == 0) continue
         const box = new THREE.Mesh(geometry, material)
-        box.position.set(x, 200, z)
+        box.position.set(x, 210, z)
         this.scene.add(box)
         this.colliders.push(box)
       }
